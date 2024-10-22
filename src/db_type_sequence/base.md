@@ -43,7 +43,10 @@ memory_hash.c
 679- case DB_TYPE_OBJECT:
 680-   hash = GET_PTR_FOR_HASH (db_get_object (val));
 681-   break;
---
+```
+
+```cpp
+
 2416-    /* only the trailing ASCII space is ignored; the hashing for other characters depend on collation */
 2417-    if (ptr[i] != 0x20)
 2418-      {
@@ -131,7 +134,10 @@ object_representation_sr.c
 1952-        (index->n_atts)++;
 1953-        break;
 1954-      }
---
+```
+
+```cpp
+
 1962-   index->asc_desc[i] = db_get_int (&att_val);
 1963- }
 1964-    }
@@ -268,7 +274,10 @@ object_representation_sr.c
 2095-     for (i = 0; i < att_cnt; i++)
 2096-       {
 2097-         index->attrs_prefix_length[i] = -1;
---
+```
+
+```cpp
+
 2297-    {SM_PROPERTY_UNIQUE, NULL, BTREE_UNIQUE, 0},
 2298-    {SM_PROPERTY_REVERSE_UNIQUE, NULL, BTREE_REVERSE_UNIQUE, 0},
 2299-    {SM_PROPERTY_INDEX, NULL, BTREE_INDEX, 0},
@@ -310,7 +319,10 @@ object_representation_sr.c
 2335-      if (rep->indexes == NULL)
 2336- {
 2337-   er_set (ER_ERROR_SEVERITY, ARG_FILE_LINE, ER_OUT_OF_VIRTUAL_MEMORY, 1, sizeof (OR_INDEX) * n_btids);
---
+```
+
+```cpp
+
 2346-    {
 2347-      if (property_vars[i].seq)
 2348- {
@@ -352,7 +364,10 @@ object_representation_sr.c
 2384- * Note: This is similar to the old function orc_diskrep_from_record, but is
 2385- *       a little simpler now that we don't need to maintain a separate
 2386- *       list for the fixed and variable length attributes.
---
+```
+
+```cpp
+
 2574-
 2575-      /* get the default value - constant, this could be using a new DB_VALUE ? */
 2576-      if (original_val_len > 0)
@@ -400,7 +415,10 @@ object_representation_sr.c
 2618-      {
 2619-        assert (false);
 2620-        pr_clear_value (&def_expr);
---
+```
+
+```cpp
+
 3539-      error = set_get_element_nocopy (setref, i, &value);
 3540-      if (error != NO_ERROR || DB_VALUE_TYPE (&value) != DB_TYPE_STRING)
 3541- {

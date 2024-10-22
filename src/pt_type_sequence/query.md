@@ -43,7 +43,10 @@ execute_schema.c
 7123-		  break;
 7124-
 7125-		default:
---
+```
+
+```cpp
+
 13372-    case PT_TYPE_TIME:
 13373-      return empty_time;
 13374-

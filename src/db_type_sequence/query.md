@@ -91,7 +91,10 @@ cursor.c
 281- */
 282-static int
 283-cursor_fixup_vobjs (DB_VALUE * value_p)
---
+```
+
+```cpp
+
 292-      db_make_object (value_p, obj);
 293-      break;
 294-
@@ -178,7 +181,10 @@ query_opfunc.c
 2118-
 2119-   if (db_seq_put (seq_tmp1, card1 + i, &dbval_tmp) != NO_ERROR)
 2120-     {
---
+```
+
+```cpp
+
 2539-
 2540-    case DB_TYPE_NUMERIC:
 2541-      error = qdata_add_numeric_to_dbval (dbval1_p, dbval2_p, result_p);
@@ -220,7 +226,10 @@ query_opfunc.c
 2577- }
 2578-      error = qdata_add_sequence_to_dbval (dbval1_p, dbval2_p, result_p, domain_p);
 2579-      break;
---
+```
+
+```cpp
+
 4618-      break;
 4619-
 4620-    case DB_TYPE_FLOAT:
@@ -262,7 +271,10 @@ query_opfunc.c
 4656- }
 4657-      error = qdata_subtract_sequence_to_dbval (dbval1_p, dbval2_p, result_p, domain_p);
 4658-      break;
---
+```
+
+```cpp
+
 5237-      break;
 5238-
 5239-    case DB_TYPE_FLOAT:
@@ -304,7 +316,10 @@ query_opfunc.c
 5275- }
 5276-      error = qdata_multiply_sequence_to_dbval (dbval1_p, dbval2_p, result_p, domain_p);
 5277-      break;
---
+```
+
+```cpp
+
 5859-      break;
 5860-
 5861-    case DB_TYPE_FLOAT:
@@ -346,7 +361,10 @@ query_opfunc.c
 5897-  if (error != NO_ERROR)
 5898-    {
 5899-      return error;
---
+```
+
+```cpp
+
 6150-
 6151-    case DB_TYPE_MONETARY:
 6152-      error = qdata_add_monetary_to_dbval (dbval1_p, dbval2_p, result_p);
@@ -388,7 +406,10 @@ query_opfunc.c
 6188-   db_make_timestampltz (result_p, *db_get_timestamp (result_p));
 6189- }
 6190-      break;
---
+```
+
+```cpp
+
 6570-  DB_COLLECTION *collection_p = NULL;
 6571-  SETOBJ *setobj_p = NULL;
 6572-  int n, size;
@@ -430,7 +451,10 @@ query_opfunc.c
 6608-      goto error;
 6609-    }
 6610-
---
+```
+
+```cpp
+
 6770-qdata_evaluate_function (THREAD_ENTRY * thread_p, regu_variable_node * function_p, val_descr * val_desc_p,
 6771-    OID * obj_oid_p, QFILE_TUPLE tuple)
 6772-{
@@ -484,7 +508,10 @@ query_opfunc.c
 6820-      return qdata_convert_operands_to_value_and_call (thread_p, funcp, val_desc_p, obj_oid_p, tuple,
 6821-             db_evaluate_json_array);
 6822-
---
+```
+
+```cpp
+
 6958-  /* execute linked query */
 6959-  EXECUTE_REGU_VARIABLE_XASL (thread_p, &(operand->value), val_desc_p);
 6960-
@@ -618,7 +645,10 @@ query_executor.c
 25022-    case DB_TYPE_CLOB:
 25023-      return "CLOB";
 25024-
---
+```
+
+```cpp
+
 25067-    case DB_TYPE_VARBIT:
 25068-      precision = domain->precision;
 25069-      break;

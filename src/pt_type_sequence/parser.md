@@ -43,7 +43,10 @@ func_type.cpp
 142-{
 143-  {PT_TYPE_MAYBE, {PT_GENERIC_TYPE_NUMBER}, {}}, //if ret type is double => tests with median(int) will fail
 144-  {0, {PT_GENERIC_TYPE_DATETIME}, {}},
---
+```
+
+```cpp
+
 298-  {PT_TYPE_JSON, {PT_GENERIC_TYPE_JSON_VAL}, {}}
 299-};
 300-
@@ -85,7 +88,10 @@ func_type.cpp
 336-func_all_signatures sig_of_benchmark =
 337-{
 338-  {PT_TYPE_DOUBLE, {PT_GENERIC_TYPE_DISCRETE_NUMBER, PT_GENERIC_TYPE_ANY}, {}},
---
+```
+
+```cpp
+
 1964-   node->type_enum = PT_TYPE_BIGINT;
 1965-   break;
 1966-
@@ -228,7 +234,10 @@ parse_tree.h
 206-
 207-#define PT_HAS_DATE_PART(t) \
 208-        ( ((t) == PT_TYPE_DATE)         || \
---
+```
+
+```cpp
+
 321-
 322-#define PT_IS_NAME_NODE(n) \
 323-        ( (n) && ((n)->node_type == PT_NAME) )
@@ -270,7 +279,10 @@ parse_tree.h
 359-                  (n)->info.name.meta_class == PT_PARAMETER) )
 360-
 361-#define PT_IS_INPUT_PARAMETER(n) \
---
+```
+
+```cpp
+
 1099-  PT_TYPE_NUMERIC,
 1100-  PT_TYPE_CHAR,
 1101-  PT_TYPE_VARCHAR,
@@ -406,7 +418,10 @@ semantic_check.c
 410- *   return:
 411- *   parser(in):
 412- *   node(in):
---
+```
+
+```cpp
+
 1025-  switch (arg_type)
 1026-    {
 1027-    case PT_TYPE_INTEGER:
@@ -633,7 +648,10 @@ semantic_check.c
 1248- case PT_TYPE_DATETIMETZ:
 1249- case PT_TYPE_DATETIMELTZ:
 1250- case PT_TYPE_BLOB:
---
+```
+
+```cpp
+
 1490-      i_attr->type_enum = pt_db_to_type_enum (db_attribute_type (attributes));
 1491-      switch (i_attr->type_enum)
 1492- {
@@ -675,7 +693,10 @@ semantic_check.c
 1528-   dom = attributes->domain;
 1529-   typ = pt_domain_to_data_type (parser, dom);
 1530-   i_attr->data_type = typ;
---
+```
+
+```cpp
+
 2033-
 2034-  if (!d_col || !s_col || !PT_IS_COLLECTION_TYPE (d_col->type_enum))
 2035-    {
@@ -718,7 +739,10 @@ semantic_check.c
 2072-      PT_NODE *st, *dt;
 2073-      int found;
 2074-
---
+```
+
+```cpp
+
 9410-    case PT_TYPE_SMALLINT:
 9411-    case PT_TYPE_INTEGER:
 9412-    case PT_TYPE_BIGINT:
@@ -807,7 +831,10 @@ type_checking.c
 6463- *   return:
 6464- *   op(in):
 6465- */
---
+```
+
+```cpp
+
 7227-   if (col)
 7228-     {
 7229-       col->type_enum = PT_TYPE_NULL;
@@ -849,7 +876,10 @@ type_checking.c
 7265-   PT_ERRORm (parser, node, MSGCAT_SET_PARSER_SEMANTIC, MSGCAT_SEMANTIC_OUT_OF_MEMORY);
 7266-   return NULL;
 7267- }
---
+```
+
+```cpp
+
 11159-     default:
 11160-       common_type = PT_TYPE_NONE;
 11161-       break;
@@ -896,7 +926,10 @@ type_checking.c
 11202-     case PT_TYPE_NUMERIC:
 11203-       common_type = PT_TYPE_NUMERIC;
 11204-       break;
---
+```
+
+```cpp
+
 11290-
 11291-  if (pt_is_op_hv_late_bind (op) && (t1 == PT_TYPE_MAYBE || t2 == PT_TYPE_MAYBE))
 11292-    {
@@ -953,7 +986,10 @@ type_checking.c
 11343-   else
 11344-     {
 11345-       result_type = t2;
---
+```
+
+```cpp
+
 13861-       rTyp = PT_TYPE_DOUBLE;
 13862-     }
 13863-   typ = pt_type_enum_to_db (rTyp);
@@ -995,7 +1031,10 @@ type_checking.c
 13899-
 13900-    return 0;
 13901-  }
---
+```
+
+```cpp
+
 18948-     e.g.) (col1,1) in (..) and col1=1 -> qo_reduce_equality_terms() -> function type (1,1) -> value type (1,1) */
 18949-  if (pt_is_set_type (func) && func->info.function.function_type == F_SEQUENCE)
 18950-    {
@@ -1037,7 +1076,10 @@ type_checking.c
 18986-     {
 18987-       func->info.function.function_type = PT_COUNT_STAR;
 18988-       parser_free_tree (parser, arg_list);
---
+```
+
+```cpp
+
 19599-  temp->info.value.db_value_is_in_workspace = 0;
 19600-  parser_free_node (parser, temp);
 19601-       }
@@ -1107,7 +1149,10 @@ type_checking.c
 ```cpp
 19661-      break;
 19662-    }
---
+```
+
+```cpp
+
 19787-pt_compare_bounds_to_value (PARSER_CONTEXT * parser, PT_NODE * expr, PT_OP_TYPE op, PT_TYPE_ENUM lhs_type,
 19788-       DB_VALUE * rhs_val, PT_TYPE_ENUM rhs_type)
 19789-{
@@ -1196,7 +1241,10 @@ parse_tree_cl.c
 4159-    default:
 4160-      return "unknown";
 4161-    }
---
+```
+
+```cpp
+
 4579-  }
 4580-
 4581-       node->info.query.q.select.list = parser_copy_tree_list (parser, spec->info.spec.as_attr_list);
@@ -1238,7 +1286,10 @@ parse_tree_cl.c
 4617-       else if (list->node_type == PT_FUNCTION)
 4618-  {
 4619-    list = col->info.function.arg_list;
---
+```
+
+```cpp
+
 8606-   {
 8607-     sprintf (buf, "(%d)", precision);
 8608-     q = pt_append_nulstring (parser, q, buf);
@@ -1280,7 +1331,10 @@ parse_tree_cl.c
 8644-      break;
 8645-
 8646-    default:
---
+```
+
+```cpp
+
 15980-  return b;
 15981-}
 15982-#endif
@@ -1322,7 +1376,10 @@ parse_tree_cl.c
 16018-}
 16019-
 16020-/*
---
+```
+
+```cpp
+
 16210-   prt_coll_id = -1;
 16211- }
 16212-
@@ -1423,7 +1480,10 @@ parse_dbi.c
 1420- * pt_type_enum_to_db_domain_name() - returns string form of t's datatype
 1421- *   return:  character string denoting datatype dt
 1422- *   t(in): a PT_TYPE_ENUM
---
+```
+
+```cpp
+
 1488-      name = "monetary";
 1489-      break;
 1490-
@@ -1465,7 +1525,10 @@ parse_dbi.c
 1526-      name = "blob";
 1527-      break;
 1528-    case PT_TYPE_CLOB:
---
+```
+
+```cpp
+
 2375-    case PT_TYPE_VARCHAR:
 2376-      db_type = DB_TYPE_VARCHAR;
 2377-      break;
@@ -1507,7 +1570,10 @@ parse_dbi.c
 2413-      db_type = DB_TYPE_BIT;
 2414-      break;
 2415-    case PT_TYPE_VARBIT:
---
+```
+
+```cpp
+
 2649-      break;
 2650-    case DB_TYPE_DATETIMELTZ:
 2651-      pt_type = PT_TYPE_DATETIMELTZ;
@@ -1549,7 +1615,10 @@ parse_dbi.c
 2687-    case DB_TYPE_VARBIT:
 2688-      pt_type = PT_TYPE_VARBIT;
 2689-      break;
---
+```
+
+```cpp
+
 3250-    case PT_TYPE_MULTISET:
 3251-      multiset = db_set_create_multi (NULL, NULL);
 3252-      if (multiset == NULL)
@@ -1638,7 +1707,10 @@ csql_grammar.y
 2064-   $$ = dt;
 2065-   PARSER_SAVE_ERR_CONTEXT ($$, @$.buffer_pos)
 2066-
---
+```
+
+```cpp
+
 14668-
 14669-   PT_NODE *node = $1;
 14670-   if (node != NULL)
@@ -1680,7 +1752,10 @@ csql_grammar.y
 14706-
 14707-   id = $2;
 14708-   if (id && id->node_type == PT_NAME)
---
+```
+
+```cpp
+
 17587-
 17588-  DBG_PRINT}}
 17589- | CAST
@@ -1722,7 +1797,10 @@ csql_grammar.y
 17625-  {{ DBG_TRACE_GRAMMAR(reserved_func, | CLASS '(' identifier ')' );
 17626-
 17627-   $3->info.name.meta_class = PT_OID_ATTR;
---
+```
+
+```cpp
+
 19661-   bool found_paren_set_expr = false;
 19662-   int lhs_cnt, rhs_cnt = 0;
 19663-   bool found_match = false;
@@ -1789,7 +1867,10 @@ csql_grammar.y
 19724-      }
 19725-         }
 19726-                              if (found_paren_set_expr == true)
---
+```
+
+```cpp
+
 19863-
 19864-   PT_NODE *node = parser_make_expression (this_parser, $2, $1, NULL, NULL);
 19865-   PT_NODE *t = CONTAINER_AT_1 ($3);
@@ -1831,7 +1912,10 @@ csql_grammar.y
 19901-      }
 19902-         }
 19903-
---
+```
+
+```cpp
+
 19929-       if (is_paren == true)
 19930-         {
 19931-    rhs = rhs->info.value.data_value.set;
@@ -1873,7 +1957,10 @@ csql_grammar.y
 19967-      }
 19968-         }
 19969-       if (rhs_found_paren_set_expr && lhs_found_paren_set_expr)
---
+```
+
+```cpp
+
 21026-
 21027-   $$ = $1;
 21028-
@@ -1948,7 +2035,10 @@ csql_grammar.y
 21097-
 21098-  DBG_PRINT}}
 21099- ;
---
+```
+
+```cpp
+
 22352-
 22353-  DBG_PRINT}}
 22354- ;
@@ -1990,7 +2080,10 @@ csql_grammar.y
 22390-  {{ DBG_TRACE_GRAMMAR(signed_literal_,  : literal_ );
 22391-
 22392-   $$ = $1;
---
+```
+
+```cpp
+
 22689-  {{ DBG_TRACE_GRAMMAR(constant_set, | opt_of_container '{' '}' );
 22690-
 22691-   PT_NODE *node = parser_new_node (this_parser, PT_VALUE);
@@ -2065,7 +2158,10 @@ csql_grammar.y
 22760-
 22761-  DBG_PRINT}}
 22762- ;
---
+```
+
+```cpp
+
 28067-{
 28068-  PT_NODE *val, *tmp;
 28069-
@@ -2154,7 +2250,10 @@ name_resolution.c
 1612-    case PT_EXPR:
 1613-      (void) pt_instnum_compatibility (node);
 1614-      pt_mark_function_index_expression (parser, node, bind_arg);
---
+```
+
+```cpp
+
 2081-    parser_free_tree (parser, node);
 2082-    node = NULL;
 2083-    goto select_end;
@@ -2196,7 +2295,10 @@ name_resolution.c
 2119-       parser_free_node (parser, node->info.query.q.select.list);
 2120-
 2121-       node->info.query.q.select.list = pt_resolve_star (parser, node->info.query.q.select.from, NULL);
---
+```
+
+```cpp
+
 4155-      if (dt1->info.data_type.entity == NULL && dt2->info.data_type.entity == NULL)
 4156- {
 4157-   return 1;
@@ -2238,7 +2340,10 @@ name_resolution.c
 4193-    break; /* got match */
 4194-  }
 4195-       v = v->next;
---
+```
+
+```cpp
+
 4496-      while (domain)
 4497- {
 4498-   db = db_domain_class (domain);
@@ -2280,7 +2385,10 @@ name_resolution.c
 4534-     * this list; this makes certain things much easier
 4535-     * later on.
 4536-     * PRESERVE THE ORDER OF THESE LISTS!
---
+```
+
+```cpp
+
 4912-
 4913-PT_TYPE_ENUM pt_type[CCI_U_TYPE_LAST + 1] = {
 4914-  PT_TYPE_NULL,
@@ -2322,7 +2430,10 @@ name_resolution.c
 4950-{
 4951-  if (CCI_IS_SET_TYPE (u_ext_type))
 4952-    {
---
+```
+
+```cpp
+
 4989-    {
 4990-    case PT_TYPE_JSON:
 4991-      break;
@@ -2364,7 +2475,10 @@ name_resolution.c
 5027-
 5028-      dt->type_enum = attr_def_node->type_enum;
 5029-
---
+```
+
+```cpp
+
 5519- *   att(in): a db_attribute
 5520- *   attr(in/out): a PT_NAME node corresponding to att
 5521- *   db(in):
@@ -2406,7 +2520,10 @@ name_resolution.c
 5557-
 5558-  /* set its shared attribute flag */
 5559-  if (db_attribute_is_shared (att))
---
+```
+
+```cpp
+
 10089-    {
 10090-      node->info.method_call.method_type = PT_IS_INST_MTHD;
 10091-    }
