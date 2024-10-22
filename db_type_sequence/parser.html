@@ -1,0 +1,815 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>parser - Cubvec Survey</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Intro</a></li><li class="chapter-item expanded "><a href="../pt_type_sequence/index.html"><strong aria-hidden="true">2.</strong> PT_TYPE_SEQUENCE</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../pt_type_sequence/parser.html"><strong aria-hidden="true">2.1.</strong> parser</a></li><li class="chapter-item expanded "><a href="../pt_type_sequence/query.html"><strong aria-hidden="true">2.2.</strong> query</a></li><li class="chapter-item expanded "><a href="../pt_type_sequence/optimizer.html"><strong aria-hidden="true">2.3.</strong> optimizer</a></li></ol></li><li class="chapter-item expanded "><a href="../db_type_sequence/index.html"><strong aria-hidden="true">3.</strong> DB_TYPE_SEQUENCE</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../db_type_sequence/query.html"><strong aria-hidden="true">3.1.</strong> query</a></li><li class="chapter-item expanded "><a href="../db_type_sequence/object.html"><strong aria-hidden="true">3.2.</strong> object</a></li><li class="chapter-item expanded "><a href="../db_type_sequence/storage.html"><strong aria-hidden="true">3.3.</strong> storage</a></li><li class="chapter-item expanded "><a href="../db_type_sequence/parser.html" class="active"><strong aria-hidden="true">3.4.</strong> parser</a></li><li class="chapter-item expanded "><a href="../db_type_sequence/base.html"><strong aria-hidden="true">3.5.</strong> base</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Cubvec Survey</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="parser-directory"><a class="header" href="#parser-directory">Parser Directory</a></h1>
+<pre><code class="language-cpp">parse_dbi.c
+594-  db_value_clone ((DB_VALUE *) val, &amp;result-&gt;info.value.db_value);
+595-  result-&gt;info.value.db_value_is_initialized = true;
+596-  result-&gt;info.value.db_value_is_in_workspace = true;
+597-
+598-  db_type = DB_VALUE_TYPE (val);
+599-  result-&gt;type_enum = pt_db_to_type_enum (db_type);
+600-
+601-  switch (db_type)
+602-    {
+603-    case DB_TYPE_NULL:
+604-      result-&gt;type_enum = PT_TYPE_NULL;
+605-      break;
+606-    case DB_TYPE_SET:
+607-      result-&gt;info.value.data_value.set = pt_set_elements_to_value (parser, val);
+608-      pt_add_type_to_set (parser, result-&gt;info.value.data_value.set, &amp;result-&gt;data_type);
+609-      break;
+610-    case DB_TYPE_MULTISET:
+611-      result-&gt;info.value.data_value.set = pt_set_elements_to_value (parser, val);
+612-      pt_add_type_to_set (parser, result-&gt;info.value.data_value.set, &amp;result-&gt;data_type);
+613-      break;
+614:    case DB_TYPE_SEQUENCE:
+615-      result-&gt;info.value.data_value.set = pt_set_elements_to_value (parser, val);
+616-      pt_add_type_to_set (parser, result-&gt;info.value.data_value.set, &amp;result-&gt;data_type);
+617-      break;
+618-
+619-    case DB_TYPE_INTEGER:
+620-      result-&gt;info.value.data_value.i = db_get_int (val);
+621-      break;
+622-    case DB_TYPE_BIGINT:
+623-      result-&gt;info.value.data_value.bigint = db_get_bigint (val);
+624-      break;
+625-    case DB_TYPE_FLOAT:
+626-      result-&gt;info.value.data_value.f = db_get_float (val);
+627-      break;
+628-    case DB_TYPE_DOUBLE:
+629-      result-&gt;info.value.data_value.d = db_get_double (val);
+630-      break;
+631-    case DB_TYPE_JSON:
+632-      result-&gt;data_type = parser_new_node (parser, PT_DATA_TYPE);
+633-      if (result-&gt;data_type == NULL)
+634- {
+
+</code></pre>
+<pre><code class="language-cpp">1585-    case DB_TYPE_TIMESTAMPTZ:
+1586-      retval = tp_domain_construct (domain_type, NULL, DB_TIMESTAMPTZ_PRECISION, 0, NULL);
+1587-      break;
+1588-    case DB_TYPE_DATETIMELTZ:
+1589-    case DB_TYPE_DATETIME:
+1590-      retval = tp_domain_construct (domain_type, NULL, DB_DATETIME_PRECISION, DB_DATETIME_DECIMAL_SCALE, NULL);
+1591-      break;
+1592-    case DB_TYPE_DATETIMETZ:
+1593-      retval = tp_domain_construct (domain_type, NULL, DB_DATETIMETZ_PRECISION, DB_DATETIME_DECIMAL_SCALE, NULL);
+1594-      break;
+1595-    case DB_TYPE_BLOB:
+1596-    case DB_TYPE_CLOB:
+1597-    case DB_TYPE_SUB:
+1598-    case DB_TYPE_POINTER:
+1599-    case DB_TYPE_ERROR:
+1600-    case DB_TYPE_VOBJ:
+1601-    case DB_TYPE_OID:
+1602-    case DB_TYPE_OBJECT:
+1603-    case DB_TYPE_SET:
+1604-    case DB_TYPE_MULTISET:
+1605:    case DB_TYPE_SEQUENCE:
+1606-    case DB_TYPE_MIDXKEY:
+1607-    case DB_TYPE_ENUMERATION:
+1608-    case DB_TYPE_JSON:
+1609-      retval = tp_domain_construct (domain_type, (DB_OBJECT *) 0, 0, 0, (TP_DOMAIN *) 0);
+1610-      break;
+1611-
+1612-    case DB_TYPE_NUMERIC:
+1613-      retval = tp_domain_construct (domain_type, NULL, DB_DEFAULT_NUMERIC_PRECISION, DB_DEFAULT_NUMERIC_SCALE, NULL);
+1614-      break;
+1615-
+1616-    case DB_TYPE_CHAR:
+1617-    case DB_TYPE_NCHAR:
+1618-    case DB_TYPE_BIT:
+1619-    case DB_TYPE_VARCHAR:
+1620-    case DB_TYPE_VARNCHAR:
+1621-    case DB_TYPE_VARBIT:
+1622-      /* Note that we assume that some other force is going to come in and repair the precision of the destination of
+1623-       * this domain is for the schema manager.  Might be a problem . . . */
+1624-      retval = tp_domain_construct (domain_type, NULL, TP_FLOATING_PRECISION_VALUE, 0, NULL);
+1625-      break;
+</code></pre>
+<pre><code class="language-cpp">1904-      precision = dt-&gt;info.data_type.precision;
+1905-      codeset = dt-&gt;info.data_type.units;
+1906-      collation_id = dt-&gt;info.data_type.collation_id;
+1907-      assert (collation_id &gt;= 0);
+1908-      collation_flag = dt-&gt;info.data_type.collation_flag;
+1909-      break;
+1910-
+1911-    case DB_TYPE_BIT:
+1912-    case DB_TYPE_VARBIT:
+1913-      precision = dt-&gt;info.data_type.precision;
+1914-      codeset = dt-&gt;info.data_type.units;
+1915-      break;
+1916-
+1917-    case DB_TYPE_NUMERIC:
+1918-      precision = dt-&gt;info.data_type.precision;
+1919-      scale = dt-&gt;info.data_type.dec_precision;
+1920-      break;
+1921-
+1922-    case DB_TYPE_SET:
+1923-    case DB_TYPE_MULTISET:
+1924:    case DB_TYPE_SEQUENCE:
+1925-    case DB_TYPE_MIDXKEY:
+1926-      return pt_node_to_db_domain (parser, dt, class_name);
+1927-
+1928-    case DB_TYPE_ENUMERATION:
+1929-      if (pt_get_enumeration_from_data_type (parser, dt, &amp;enumeration) != NO_ERROR)
+1930- {
+1931-   return NULL;
+1932- }
+1933-      codeset = dt-&gt;info.data_type.units;
+1934-      collation_id = dt-&gt;info.data_type.collation_id;
+1935-      assert (collation_id &gt;= 0);
+1936-      collation_flag = dt-&gt;info.data_type.collation_flag;
+1937-      break;
+1938-
+1939-    case DB_TYPE_NULL:
+1940-    case DB_TYPE_DB_VALUE:
+1941-    case DB_TYPE_VARIABLE:
+1942-    case DB_TYPE_TABLE:
+1943-    case DB_TYPE_RESULTSET:
+1944-      break;
+
+
+
+2125-
+2126-    case DB_TYPE_VARCHAR:
+2127-    case DB_TYPE_CHAR:
+2128-    case DB_TYPE_NCHAR:
+2129-    case DB_TYPE_VARNCHAR:
+2130-    case DB_TYPE_BIT:
+2131-    case DB_TYPE_VARBIT:
+2132-      precision = dt-&gt;info.data_type.precision;
+2133-      codeset = dt-&gt;info.data_type.units;
+2134-      collation_id = dt-&gt;info.data_type.collation_id;
+2135-      collation_flag = dt-&gt;info.data_type.collation_flag;
+2136-      break;
+2137-
+2138-    case DB_TYPE_NUMERIC:
+2139-      precision = dt-&gt;info.data_type.precision;
+2140-      scale = dt-&gt;info.data_type.dec_precision;
+2141-      break;
+2142-
+2143-    case DB_TYPE_SET:
+2144-    case DB_TYPE_MULTISET:
+2145:    case DB_TYPE_SEQUENCE:
+2146-      while (dt &amp;&amp; (error == NO_ERROR))
+2147- {
+2148-   domain = pt_data_type_to_db_domain (parser, dt, NULL);
+2149-   if (domain)
+2150-     {
+2151-       error = tp_domain_add (&amp;setdomain, domain);
+2152-     }
+2153-   dt = dt-&gt;next;
+2154- }
+2155-      if (error == NO_ERROR)
+2156- {
+2157-   retval = tp_domain_construct (domain_type, (DB_OBJECT *) 0, 0, 0, setdomain);
+2158- }
+2159-      return retval;
+2160-
+2161-    case DB_TYPE_ENUMERATION:
+2162-      if (pt_get_enumeration_from_data_type (parser, dt, &amp;enumeration) != NO_ERROR)
+2163- {
+2164-   return NULL;
+2165- }
+
+</code></pre>
+<pre><code class="language-cpp">2242- */
+2243-DB_DOMAIN *
+2244-pt_node_to_db_domain (PARSER_CONTEXT * parser, PT_NODE * node, const char *class_name)
+2245-{
+2246-  int error = NO_ERROR, natts = 0;
+2247-  DB_DOMAIN *retval = (DB_DOMAIN *) 0;
+2248-  DB_DOMAIN *domain = (DB_DOMAIN *) 0;
+2249-  DB_DOMAIN *setdomain = (DB_DOMAIN *) 0;
+2250-  DB_TYPE domain_type;
+2251-  PT_NODE *dt;
+2252-
+2253-  CAST_POINTER_TO_NODE (node);
+2254-
+2255-  if (node-&gt;data_type)
+2256-    {
+2257-      domain_type = pt_type_enum_to_db (node-&gt;type_enum);
+2258-      switch (domain_type)
+2259- {
+2260- case DB_TYPE_SET:
+2261- case DB_TYPE_MULTISET:
+2262: case DB_TYPE_SEQUENCE:
+2263- case DB_TYPE_MIDXKEY:
+2264-   /* Recursively build the setdomain */
+2265-   dt = node-&gt;data_type;
+2266-   while (dt &amp;&amp; (error == NO_ERROR))
+2267-     {
+2268-       domain = pt_data_type_to_db_domain (parser, dt, class_name);
+2269-       if (domain)
+2270-  {
+2271-    if (domain_type == DB_TYPE_MIDXKEY)
+2272-      {
+2273-        error = tp_domain_attach (&amp;setdomain, domain);
+2274-        natts++;
+2275-      }
+2276-    else
+2277-      {
+2278-        error = tp_domain_add (&amp;setdomain, domain);
+2279-      }
+2280-  }
+2281-       else
+2282-  {
+
+
+
+2376-      db_type = DB_TYPE_VARCHAR;
+2377-      break;
+2378-
+2379-    case PT_TYPE_JSON:
+2380-      db_type = DB_TYPE_JSON;
+2381-      break;
+2382-
+2383-    case PT_TYPE_OBJECT:
+2384-      db_type = DB_TYPE_OBJECT;
+2385-      break;
+2386-
+2387-    case PT_TYPE_SET:
+2388-      db_type = DB_TYPE_SET;
+2389-      break;
+2390-
+2391-    case PT_TYPE_MULTISET:
+2392-      db_type = DB_TYPE_MULTISET;
+2393-      break;
+2394-
+2395-    case PT_TYPE_SEQUENCE:
+2396:      db_type = DB_TYPE_SEQUENCE;
+2397-      break;
+2398-
+2399-    case PT_TYPE_MIDXKEY:
+2400-      db_type = DB_TYPE_MIDXKEY;
+2401-      break;
+2402-
+2403-    case PT_TYPE_NUMERIC:
+2404-      db_type = DB_TYPE_NUMERIC;
+2405-      break;
+2406-    case PT_TYPE_NCHAR:
+2407-      db_type = DB_TYPE_NCHAR;
+2408-      break;
+2409-    case PT_TYPE_VARNCHAR:
+2410-      db_type = DB_TYPE_VARNCHAR;
+2411-      break;
+2412-    case PT_TYPE_BIT:
+2413-      db_type = DB_TYPE_BIT;
+2414-      break;
+2415-    case PT_TYPE_VARBIT:
+2416-      db_type = DB_TYPE_VARBIT;
+
+
+
+2648-      pt_type = PT_TYPE_DATETIMETZ;
+2649-      break;
+2650-    case DB_TYPE_DATETIMELTZ:
+2651-      pt_type = PT_TYPE_DATETIMELTZ;
+2652-      break;
+2653-
+2654-    case DB_TYPE_MONETARY:
+2655-      pt_type = PT_TYPE_MONETARY;
+2656-      break;
+2657-
+2658-    case DB_TYPE_OBJECT:
+2659-      pt_type = PT_TYPE_OBJECT;
+2660-      break;
+2661-
+2662-    case DB_TYPE_SET:
+2663-      pt_type = PT_TYPE_SET;
+2664-      break;
+2665-    case DB_TYPE_MULTISET:
+2666-      pt_type = PT_TYPE_MULTISET;
+2667-      break;
+2668:    case DB_TYPE_SEQUENCE:
+2669-      pt_type = PT_TYPE_SEQUENCE;
+2670-      break;
+2671-
+2672-    case DB_TYPE_CHAR:
+2673-      pt_type = PT_TYPE_CHAR;
+2674-      break;
+2675-    case DB_TYPE_STRING:
+2676-      pt_type = PT_TYPE_VARCHAR;
+2677-      break;
+2678-    case DB_TYPE_NCHAR:
+2679-      pt_type = PT_TYPE_NCHAR;
+2680-      break;
+2681-    case DB_TYPE_VARNCHAR:
+2682-      pt_type = PT_TYPE_VARNCHAR;
+2683-      break;
+2684-    case DB_TYPE_BIT:
+2685-      pt_type = PT_TYPE_BIT;
+2686-      break;
+2687-    case DB_TYPE_VARBIT:
+2688-      pt_type = PT_TYPE_VARBIT;
+
+
+
+2859-    case DB_TYPE_RESULTSET:
+2860-      /*
+2861-       * Nothing more to do for these guys; their type is completely
+2862-       * described by the type_enum.  Why don't we care about precision
+2863-       * and dec_precision for these, if we care about DB_TYPE_INT?
+2864-       */
+2865-      break;
+2866-
+2867-    case DB_TYPE_VARIABLE:
+2868-    case DB_TYPE_SUB:
+2869-    case DB_TYPE_POINTER:
+2870-    case DB_TYPE_ERROR:
+2871-    case DB_TYPE_OID:
+2872-    case DB_TYPE_DB_VALUE:
+2873-      PT_INTERNAL_ERROR (parser, "type assignment");
+2874-      node = NULL;
+2875-      break;
+2876-
+2877-    case DB_TYPE_SET:
+2878-    case DB_TYPE_MULTISET:
+2879:    case DB_TYPE_SEQUENCE:
+2880-      dt = pt_bind_set_type (parser, node, val, data_type_added);
+2881-      break;
+2882-
+2883-      /*
+2884-       * All of the remaining cases need to tack a new DATA_TYPE node
+2885-       * onto the incoming node.  Most of the cases allocate it
+2886-       * themselves, but not all.
+2887-       */
+2888-
+2889-    case DB_TYPE_MONETARY:
+2890-      dt = parser_new_node (parser, PT_DATA_TYPE);
+2891-      if (dt)
+2892- {
+2893-   dt-&gt;type_enum = node-&gt;type_enum;
+2894-   dt-&gt;info.data_type.precision = 0;
+2895-   dt-&gt;info.data_type.dec_precision = 0;
+2896-   dt-&gt;info.data_type.units = db_value_get_monetary_currency (val);
+2897- }
+2898-      break;
+2899-
+</code></pre>
+<pre><code class="language-cpp">type_checking.c
+13915-    PT_ERRORmf2 (parser, o2, MSGCAT_SET_PARSER_SEMANTIC, MSGCAT_SEMANTIC_CANT_COERCE_TO,
+13916-          parser_print_tree (parser, o2), pt_show_type_enum (rTyp));
+13917-
+13918-    return 0;
+13919-  }
+13920-       else
+13921-  {
+13922-    pr_clear_value (arg2);
+13923-    *arg2 = tmp_val;
+13924-  }
+13925-     }
+13926- }
+13927-
+13928-      switch (op)
+13929- {
+13930- case PT_PLUS:
+13931-   switch (typ)
+13932-     {
+13933-     case DB_TYPE_SET:
+13934-     case DB_TYPE_MULTISET:
+13935:     case DB_TYPE_SEQUENCE:
+13936-       if (!pt_union_sets (parser, domain, arg1, arg2, result, o2))
+13937-  {
+13938-    return 0; /* set union failed */
+13939-  }
+13940-       break;
+13941-
+13942-     case DB_TYPE_CHAR:
+13943-     case DB_TYPE_NCHAR:
+13944-     case DB_TYPE_VARCHAR:
+13945-     case DB_TYPE_VARNCHAR:
+13946-     case DB_TYPE_BIT:
+13947-     case DB_TYPE_VARBIT:
+13948-       if (db_string_concatenate (arg1, arg2, result, &amp;truncation) &lt; 0 || truncation != DATA_STATUS_OK)
+13949-  {
+13950-    PT_ERRORc (parser, o1, er_msg ());
+13951-    return 0;
+13952-  }
+13953-       break;
+13954-
+13955-     case DB_TYPE_INTEGER:
+
+
+
+14978-        {
+14979-   PT_ERRORm (parser, o2, MSGCAT_SET_PARSER_SEMANTIC, MSGCAT_SEMANTIC_DATE_UNDERFLOW);
+14980-   return 0;
+14981-        }
+14982-    }
+14983-  db_date_decode (&amp;result_date, &amp;month, &amp;day, &amp;year);
+14984-  db_make_date (result, month, day, year);
+14985-       }
+14986-       break;
+14987-
+14988-     default:
+14989-       return 0;
+14990-     }
+14991-   break;
+14992-
+14993- case PT_TIMES:
+14994-   switch (typ)
+14995-     {
+14996-     case DB_TYPE_SET:
+14997-     case DB_TYPE_MULTISET:
+14998:     case DB_TYPE_SEQUENCE:
+14999-       if (!pt_product_sets (parser, domain, arg1, arg2, result, o2))
+15000-  {
+15001-    return 0; /* set union failed */
+15002-  }
+15003-       break;
+15004-
+15005-     case DB_TYPE_INTEGER:
+15006-       {
+15007-  /* NOTE that we need volatile to prevent optimizer from generating division expression as
+15008-   * multiplication.
+15009-   */
+15010-  volatile int i1, i2, itmp;
+15011-
+15012-  i1 = db_get_int (arg1);
+15013-  i2 = db_get_int (arg2);
+15014-  itmp = i1 * i2;
+15015-  if (OR_CHECK_MULT_OVERFLOW (i1, i2, itmp))
+15016-    {
+15017-      goto overflow;
+15018-    }
+
+</code></pre>
+<pre><code class="language-cpp">xasl_generation.c
+6906- {
+6907-   args = pt_to_regu_variable_list (parser, function-&gt;info.function.arg_list, UNBOX_AS_TABLE, NULL, NULL);
+6908- }
+6909-      else
+6910- {
+6911-   args = pt_to_regu_variable_list (parser, function-&gt;info.function.arg_list, UNBOX_AS_VALUE, NULL, NULL);
+6912- }
+6913-
+6914-      switch (function-&gt;info.function.function_type)
+6915- {
+6916- case F_SET:
+6917- case F_TABLE_SET:
+6918-   result_type = DB_TYPE_SET;
+6919-   break;
+6920- case F_MULTISET:
+6921- case F_TABLE_MULTISET:
+6922-   result_type = DB_TYPE_MULTISET;
+6923-   break;
+6924- case F_SEQUENCE:
+6925- case F_TABLE_SEQUENCE:
+6926:   result_type = DB_TYPE_SEQUENCE;
+6927-   break;
+6928- case F_MIDXKEY:
+6929-   result_type = DB_TYPE_MIDXKEY;
+6930-   break;
+6931- case F_VID:
+6932-   result_type = DB_TYPE_VOBJ;
+6933-   break;
+6934- case F_GENERIC:
+6935-   result_type = pt_node_to_db_type (function);
+6936-   break;
+6937- case F_CLASS_OF:
+6938-   result_type = DB_TYPE_OID;
+6939-   break;
+6940- case F_INSERT_SUBSTRING:
+6941- case F_ELT:
+6942- case F_REGEXP_COUNT:
+6943- case F_REGEXP_INSTR:
+6944- case F_REGEXP_LIKE:
+6945- case F_REGEXP_REPLACE:
+6946- case F_REGEXP_SUBSTR:
+
+</code></pre>
+<pre><code class="language-cpp">10747-
+10748-    case PT_NAME:
+10749-      if (rhs-&gt;info.name.meta_class != PT_PARAMETER)
+10750- {
+10751-   goto error;
+10752- }
+10753-      /* FALLTHRU */
+10754-
+10755-    case PT_VALUE:
+10756-      p = (rhs-&gt;node_type == PT_NAME) ? pt_find_value_of_label (rhs-&gt;info.name.original) : &amp;rhs-&gt;info.value.db_value;
+10757-
+10758-      if (p == NULL)
+10759- {
+10760-   goto error;
+10761- }
+10762-
+10763-      switch (DB_VALUE_TYPE (p))
+10764- {
+10765- case DB_TYPE_SET:
+10766- case DB_TYPE_MULTISET:
+10767: case DB_TYPE_SEQUENCE:
+10768-   break;
+10769- default:
+10770-   goto error;
+10771- }
+10772-
+10773-      db_collectionp = db_get_collection (p);
+10774-      n_elem = db_col_size (db_collectionp);
+10775-      break;
+10776-
+10777-    case PT_HOST_VAR:
+10778-      p = pt_value_to_db (parser, rhs);
+10779-      if (p == NULL)
+10780- {
+10781-   goto error;
+10782- }
+10783-
+10784-      switch (DB_VALUE_TYPE (p))
+10785- {
+10786- case DB_TYPE_SET:
+10787- case DB_TYPE_MULTISET:
+10788: case DB_TYPE_SEQUENCE:
+10789-   break;
+10790- default:
+10791-   goto error;
+10792- }
+10793-
+10794-      db_collectionp = db_get_collection (p);
+10795-      n_elem = db_col_size (db_collectionp);
+10796-      break;
+10797-
+10798-    default:
+10799-      goto error;
+10800-    }
+10801-
+10802-  if (n_elem &lt;= 0)
+10803-    {
+10804-      goto error;
+10805-    }
+10806-
+10807-  /* allocate regu variable list and sequence value list */
+10808-  regu_array_alloc (&amp;regu_var_list, n_elem);
+
+</code></pre>
+<pre><code class="language-cpp">parse_tree_cl.c
+2593-  int error = NO_ERROR;
+2594-  unsigned int save_custom = parser-&gt;custom_print;
+2595-
+2596-  parser_block_allocator alloc (parser);
+2597-  string_buffer sb (alloc);
+2598-
+2599-  db_value_printer printer (sb);
+2600-  if (val == NULL)
+2601-    {
+2602-      return NULL;
+2603-    }
+2604-
+2605-  /* set custom_print here so describe_data() will know to pad bit strings to full bytes */
+2606-  parser-&gt;custom_print = parser-&gt;custom_print | PT_PAD_BYTE;
+2607-  switch (DB_VALUE_TYPE (val))
+2608-    {
+2609-    case DB_TYPE_SET:
+2610-    case DB_TYPE_MULTISET:
+2611-      sb ("%s", pt_show_type_enum (pt_db_to_type_enum (DB_VALUE_TYPE (val))));
+2612-      /* fall thru */
+2613:    case DB_TYPE_SEQUENCE:
+2614-      sb ("{");
+2615-
+2616-      size = db_set_size (db_get_set ((DB_VALUE *) val));
+2617-      if (size &gt; 0)
+2618- {
+2619-   error = db_set_get (db_get_set ((DB_VALUE *) val), 0, &amp;element);
+2620-   printer.describe_value (&amp;element);
+2621-   for (i = 1; i &lt; size; i++)
+2622-     {
+2623-       error = db_set_get (db_get_set ((DB_VALUE *) val), i, &amp;element);
+2624-       sb (", ");
+2625-       printer.describe_value (&amp;element);
+2626-     }
+2627- }
+2628-      sb ("}");
+2629-      break;
+2630-
+2631-    case DB_TYPE_OBJECT:
+2632-      /* no printable representation!, should not get here */
+2633-      sb ("NULL");
+
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../db_type_sequence/storage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../db_type_sequence/base.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../db_type_sequence/storage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../db_type_sequence/base.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
