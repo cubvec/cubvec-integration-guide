@@ -3,4 +3,15 @@ authors = ["Daehyun Kim"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Cubvec Survey"
+title = "Cubvec Integration Guide"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "light"
+smart-punctuation = true
+mathjax-support = false
+copy-fonts = true
+no-section-label = false
+
+[output.html.fold]
+enable = true
